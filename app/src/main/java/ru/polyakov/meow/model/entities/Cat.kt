@@ -1,4 +1,4 @@
-package ru.polyakov.meow.model
+package ru.polyakov.meow.model.entities
 
 data class Cat(
     val statusCode: Int,

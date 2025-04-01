@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:fitsSystemWindows="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:paddingBottom="32dp"
+    tools:context=".fragments.MainFragment">
 
+    <!-- Верхняя панель с полем ввода и кнопкой загрузки -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-
         <EditText
             android:id="@+id/codeInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="Введите HTTP код"
-            android:importantForAutofill="no"
             android:inputType="number"
             android:maxLength="3" />
-
         <Button
             android:id="@+id/loadButton"
             android:layout_width="wrap_content"
@@ -28,6 +30,7 @@
             android:text="Загрузить" />
     </LinearLayout>
 
+    <!-- Контейнер для картинки и прогресс-бара -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -39,22 +42,49 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="catmeoemeow"
-            android:scaleType="fitCenter" />
+            android:scaleType="fitCenter"
+            android:visibility="visible" />
 
         <ProgressBar
             android:id="@+id/progressBar"
-            android:layout_width="26dp"
-            android:layout_height="18dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:visibility="visible" />
+            android:visibility="gone" />
     </FrameLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp">
+
+        <ImageView
+            android:id="@+id/likeIconImageView"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.2"
+            android:src="@drawable/ic_like"
+            android:visibility="gone"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/errorTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="@android:color/holo_red_dark"
+        android:text="Ошибка"
+        android:visibility="gone" />
+
+    <!-- Кнопка лайка (если требуется) -->
     <Button
         android:id="@+id/likeButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Лайкнуть котика"
-        android:visibility="gone" />
-
+        android:visibility="gone"
+        tools:visibility="visible" />
 </LinearLayout>

@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">meow</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="main_page">Main page</string>
+    <string name="history_page">History page</string>
+    <string name="liked_pictures_page">Liked pictures page</string>
+</resources>

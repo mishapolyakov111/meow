@@ -1,11 +1,13 @@
 package ru.polyakov.meow.presenters
 
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import ru.polyakov.meow.abstractions.MainContract
 import ru.polyakov.meow.model.repositories.CatRepository
 
-class MainPresenter : MainContract.Presenter {
+class MainPresenter : KoinComponent, MainContract.Presenter {
     private var view: MainContract.View? = null
-    private var catRepository: CatRepository = CatRepository()
+    private val catRepository: CatRepository by inject()
 
     override fun attach(view: MainContract.View) {
         this.view = view

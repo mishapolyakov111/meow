@@ -44,6 +44,12 @@ class CatRepository {
         return cat
     }
 
+    fun removeLikeCat(statusCode: Int): Cat? {
+        val cat = getCat(statusCode) ?: return null
+        cat.isLiked = false
+        return cat
+    }
+
     fun getAllCats(): List<Cat> {
         return cats.values.toList()
     }

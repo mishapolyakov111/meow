@@ -7,10 +7,13 @@ import ru.polyakov.meow.abstractions.MainContract
 import ru.polyakov.meow.model.repositories.CatRepository
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import ru.polyakov.meow.model.entities.CatHistory
+import ru.polyakov.meow.model.repositories.CatHistoryRepository
 
 class MainPresenter : KoinComponent, MainContract.Presenter {
     private var view: MainContract.View? = null
     private val catRepository: CatRepository by inject()
+    private val historyRepository: CatHistoryRepository by inject()
 
     override fun attach(view: MainContract.View) {
         this.view = view
@@ -28,6 +31,13 @@ class MainPresenter : KoinComponent, MainContract.Presenter {
                 val cat = catRepository.getCat(statusCode)
                 if (cat != null) {
                     view?.showCat(cat)
+
+                    val catHistory = CatHistory(
+                        statusCode = statusCode,
+                        imageUrl = cat.imageUrl,
+                        requestTimestamp = System.currentTimeMillis()
+                    )
+                    historyRepository.insertHistory(catHistory)
                 } else {
                     view?.showError("Введите корректный HTTP код")
                 }

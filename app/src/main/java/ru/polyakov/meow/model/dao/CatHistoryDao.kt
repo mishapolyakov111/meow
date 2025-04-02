@@ -14,5 +14,5 @@ interface CatHistoryDao {
     suspend fun getAllHistory(): List<CatHistory>
 
     @Query("DELETE FROM cat_history WHERE id = :id")
-    suspend fun deleteHistoryById(id: Int)
+    suspend fun deleteHistoryById(id: Long)
 }

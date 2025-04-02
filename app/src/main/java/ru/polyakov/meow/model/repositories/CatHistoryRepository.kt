@@ -14,7 +14,7 @@ class CatHistoryRepository(private val catHistoryDao: CatHistoryDao) {
         catHistoryDao.getAllHistory()
     }
 
-    suspend fun deleteHistoryById(id: Int) = withContext(Dispatchers.IO) {
+    suspend fun deleteHistoryById(id: Long) = withContext(Dispatchers.IO) {
         catHistoryDao.deleteHistoryById(id)
     }
 }

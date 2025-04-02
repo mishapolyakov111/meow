@@ -31,35 +31,25 @@ class CatRepository(private val catDao: CatDao) {
     }
 
     suspend fun getCat(statusCode: Int): Cat? {
-        if (statusCode !in ALLOWED_HTTP_CODES) {
-            return null
-        }
+        if (statusCode !in ALLOWED_HTTP_CODES) return null
         return withContext(Dispatchers.IO) {
-            var cat = catDao.getCatByCode(statusCode)
-            if (cat == null) {
-                val imageUrl = "$baseUrl$statusCode"
-                cat = Cat(statusCode, imageUrl)
-                catDao.insertCat(cat)
+            catDao.getCatByCode(statusCode) ?: Cat(statusCode, "$baseUrl$statusCode").also {
+                catDao.insertCat(it)
             }
-            cat
         }
     }
 
-    suspend fun likeCat(statusCode: Int): Cat? {
-        return withContext(Dispatchers.IO) {
-            val cat = getCat(statusCode) ?: return@withContext null
-            cat.isLiked = true
-            catDao.updateCat(cat)
-            cat
+    suspend fun likeCat(statusCode: Int): Cat? = withContext(Dispatchers.IO) {
+        getCat(statusCode)?.apply {
+            isLiked = true
+            catDao.updateCat(this)
         }
     }
 
-    suspend fun removeLikeCat(statusCode: Int): Cat? {
-        return withContext(Dispatchers.IO) {
-            val cat = getCat(statusCode) ?: return@withContext null
-            cat.isLiked = false
-            catDao.updateCat(cat)
-            cat
+    suspend fun removeLikeCat(statusCode: Int): Cat? = withContext(Dispatchers.IO) {
+        getCat(statusCode)?.apply {
+            isLiked = false
+            catDao.updateCat(this)
         }
     }
 

@@ -4,6 +4,7 @@ import androidx.room.Room
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 import ru.polyakov.meow.model.database.MeowDatabase
+import ru.polyakov.meow.model.repositories.CatHistoryRepository
 import ru.polyakov.meow.model.repositories.CatRepository
 
 val appModule = module {
@@ -13,5 +14,7 @@ val appModule = module {
             .build()
     }
     single { get<MeowDatabase>().catDao() }
+    single { get<MeowDatabase>().catHistoryDao() }
     single { CatRepository(get()) }
+    single { CatHistoryRepository(get()) }
 }

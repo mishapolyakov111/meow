@@ -1,9 +1,12 @@
 package ru.polyakov.meow.presenters
 
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import ru.polyakov.meow.abstractions.MainContract
 import ru.polyakov.meow.model.repositories.CatRepository
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class MainPresenter : KoinComponent, MainContract.Presenter {
     private var view: MainContract.View? = null
@@ -19,29 +22,32 @@ class MainPresenter : KoinComponent, MainContract.Presenter {
 
     override fun loadCatByCode(code: String) {
         view?.showLoading()
-
-        try {
-            val statusCode = code.toInt()
-            val cat = catRepository.getCat(statusCode)
-            if (cat != null) {
-                view?.showCat(cat)
-            } else {
-                view?.showError("Введите корректный HTTP код")
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                val statusCode = code.toInt()
+                val cat = catRepository.getCat(statusCode)
+                if (cat != null) {
+                    view?.showCat(cat)
+                } else {
+                    view?.showError("Введите корректный HTTP код")
+                }
+            } catch (e: NumberFormatException) {
+                view?.showError("Введите числовой код")
+            } finally {
+                view?.hideLoading()
             }
-        } catch (e: NumberFormatException) {
-            view?.showError("Введите числовой код")
-        } finally {
-            view?.hideLoading()
         }
     }
 
     override fun likeCat(code: String) {
-        try {
-            val statusCode = code.toInt()
-            catRepository.likeCat(statusCode)
-            view?.showLike()
-        } catch (e: NumberFormatException) {
-            view?.showError("Введите числовой код")
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                val statusCode = code.toInt()
+                catRepository.likeCat(statusCode)
+                view?.showLike()
+            } catch (e: NumberFormatException) {
+                view?.showError("Введите числовой код")
+            }
         }
     }
 }

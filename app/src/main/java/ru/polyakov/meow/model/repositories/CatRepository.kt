@@ -1,8 +1,12 @@
 package ru.polyakov.meow.model.repositories
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import ru.polyakov.meow.model.dao.CatDao
 import ru.polyakov.meow.model.entities.Cat
 
-class CatRepository {
+class CatRepository(private val catDao: CatDao) {
+
     private val baseUrl = "https://http.cat/"
 
     companion object {
@@ -26,31 +30,40 @@ class CatRepository {
         )
     }
 
-    private val cats: MutableMap<Int, Cat> = mutableMapOf()
-
-    fun getCat(statusCode: Int): Cat? {
+    suspend fun getCat(statusCode: Int): Cat? {
         if (statusCode !in ALLOWED_HTTP_CODES) {
             return null
         }
-        return cats.getOrPut(statusCode) {
-            val imageUrl = "$baseUrl$statusCode"
-            Cat(statusCode, imageUrl)
+        return withContext(Dispatchers.IO) {
+            var cat = catDao.getCatByCode(statusCode)
+            if (cat == null) {
+                val imageUrl = "$baseUrl$statusCode"
+                cat = Cat(statusCode, imageUrl)
+                catDao.insertCat(cat)
+            }
+            cat
         }
     }
 
-    fun likeCat(statusCode: Int): Cat? {
-        val cat = getCat(statusCode) ?: return null
-        cat.isLiked = true
-        return cat
+    suspend fun likeCat(statusCode: Int): Cat? {
+        return withContext(Dispatchers.IO) {
+            val cat = getCat(statusCode) ?: return@withContext null
+            cat.isLiked = true
+            catDao.updateCat(cat)
+            cat
+        }
     }
 
-    fun removeLikeCat(statusCode: Int): Cat? {
-        val cat = getCat(statusCode) ?: return null
-        cat.isLiked = false
-        return cat
+    suspend fun removeLikeCat(statusCode: Int): Cat? {
+        return withContext(Dispatchers.IO) {
+            val cat = getCat(statusCode) ?: return@withContext null
+            cat.isLiked = false
+            catDao.updateCat(cat)
+            cat
+        }
     }
 
-    fun getAllCats(): List<Cat> {
-        return cats.values.toList()
+    suspend fun getAllCats(): List<Cat> = withContext(Dispatchers.IO) {
+        catDao.getAllCats()
     }
 }

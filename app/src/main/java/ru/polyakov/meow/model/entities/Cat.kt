@@ -1,7 +1,11 @@
 package ru.polyakov.meow.model.entities
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "cats")
 data class Cat(
-    val statusCode: Int,
+    @PrimaryKey val statusCode: Int,
     val imageUrl: String,
     var isLiked: Boolean = false
 )

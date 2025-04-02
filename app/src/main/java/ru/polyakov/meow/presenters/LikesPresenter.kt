@@ -1,8 +1,12 @@
 package ru.polyakov.meow.presenters
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import ru.polyakov.meow.abstractions.LikesContract
+import ru.polyakov.meow.model.entities.Cat
 import ru.polyakov.meow.model.repositories.CatRepository
 
 class LikesPresenter : KoinComponent, LikesContract.Presenter {
@@ -19,13 +23,17 @@ class LikesPresenter : KoinComponent, LikesContract.Presenter {
     }
 
     override fun refreshLikes() {
-        val likedCats = catRepository.getAllCats().filter { it.isLiked }
-        view?.showLikedCats(likedCats)
+        CoroutineScope(Dispatchers.Main).launch {
+            val likedCats: List<Cat> = catRepository.getAllCats().filter { it.isLiked }
+            view?.showLikedCats(likedCats)
+        }
     }
 
     override fun removeCat(statusCode: Int) {
-        if (catRepository.removeLikeCat(statusCode) != null) {
-            refreshLikes()
+        CoroutineScope(Dispatchers.Main).launch {
+            if (catRepository.removeLikeCat(statusCode) != null) {
+                refreshLikes()
+            }
         }
     }
 }
